@@ -59,6 +59,14 @@ void data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uin
     }
 }
 
+int ma_buffer_size() {
+  return _ctx->buf_size;
+}
+
+int ma_buffer_filled_size() {
+  return _ctx->buf_end - _ctx->buf_start;
+}
+
 int ma_stream_push(float* buf, int length) {
 #ifdef MP_AUDIO_STREAM_DEBUGB
     printf("push: length:%d _length:%d _start:%d\n", length, _ctx->buf_end, _ctx->buf_start);
