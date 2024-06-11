@@ -25,6 +25,8 @@ class AudioStreamImpl implements AudioStream {
   late _MAInt _statExhaustCountFfi;
   late _MAInt _statFullCountFfi;
   late _MAVoid _statResetFfi;
+  late _MAInt _getBufferSizeFfi;
+  late _MAInt _getBufferFilledSizeFfi;
 
   @override
   int init(
@@ -64,8 +66,19 @@ class AudioStreamImpl implements AudioStream {
         .lookup<NativeFunction<_MAVoidFunc>>("ma_stream_stat_reset")
         .asFunction<_MAVoid>();
 
-    return initFfi(channels * bufferMilliSec * sampleRate ~/ 1000,
-        channels * waitingBufferMilliSec * sampleRate ~/ 1000, channels, sampleRate);
+    _getBufferSizeFfi = dynLib
+        .lookup<NativeFunction<_MAIntFunc>>("ma_buffer_size")
+        .asFunction<_MAInt>();
+
+    _getBufferFilledSizeFfi = dynLib
+        .lookup<NativeFunction<_MAIntFunc>>("ma_buffer_filled_size")
+        .asFunction<_MAInt>();
+
+    return initFfi(
+        channels * bufferMilliSec * sampleRate ~/ 1000,
+        channels * waitingBufferMilliSec * sampleRate ~/ 1000,
+        channels,
+        sampleRate);
   }
 
   @override
@@ -96,5 +109,15 @@ class AudioStreamImpl implements AudioStream {
   @override
   void resetStat() {
     _statResetFfi();
+  }
+
+  @override
+  int getBufferSize() {
+    return _getBufferSizeFfi();
+  }
+
+  @override
+  int getBufferFilledSize() {
+    return _getBufferFilledSizeFfi();
   }
 }

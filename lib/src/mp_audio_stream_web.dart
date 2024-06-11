@@ -95,4 +95,14 @@ class AudioStreamImpl extends mpaudio.AudioStream {
   void resetStat() {
     delay((s) => s.resetStat());
   }
+
+  @override
+  int getBufferSize() {
+    return _stream?.callMethod('getBufferSize', []);
+  }
+
+  @override
+  int getBufferFilledSize() {
+    return _stream?.callMethod('getBufferFilledSize', []);
+  }
 }
